@@ -74,7 +74,7 @@ clean:
 version := $(shell git describe --tags)
 revision := $(shell git rev-parse HEAD)
 
-install mtail: $(GOFILES) .dep-stamp
+install mtail: $(GOFILES)
 	go install -ldflags "-X main.Version=${version} -X main.Revision=${revision}"
 
 vm/parser.go: vm/parser.y .gen-dep-stamp
@@ -84,15 +84,15 @@ emgen/emgen: emgen/emgen.go
 	cd emgen && go build
 
 .PHONY: test check 
-check test: $(GOFILES) $(GOTESTFILES) .dep-stamp
+check test: $(GOFILES) $(GOTESTFILES)
 	go test -v -timeout 10s ./... ./testdata
 
 .PHONY: testrace
-testrace: $(GOFILES) $(GOTESTFILES) .dep-stamp
+testrace: $(GOFILES) $(GOTESTFILES)
 	go test -v -timeout ${timeout} -race ./... ./testdata
 
 .PHONY: smoke
-smoke: $(GOFILES) $(GOTESTFILES) .dep-stamp
+smoke: $(GOFILES) $(GOTESTFILES)
 	go test -v -timeout 1s -test.short ./... ./testdata
 
 .PHONY: ex_test
@@ -100,7 +100,7 @@ ex_test: ex_test.go testdata/* examples/*
 	go test -run TestExamplePrograms -v --logtostderr
 
 .PHONY: bench
-bench: $(GOFILES) $(GOTESTFILES) .dep-stamp
+bench: $(GOFILES) $(GOTESTFILES)
 	go test -bench=. -timeout=60s -run=XXX ./... ./testdata
 
 .PHONY: bench_cpu
@@ -111,12 +111,12 @@ bench_mem:
 	go test -bench=. -run=XXX -timeout=60s -memprofile=mem.out
 
 .PHONY: recbench
-recbench: $(GOFILES) $(GOTESTFILES) .dep-stamp
+recbench: $(GOFILES) $(GOTESTFILES) 
 	go test -bench=. -run=XXX --record_benchmark ./... ./testdata
 
 .PHONY: coverage
 coverage: gover.coverprofile
-gover.coverprofile: $(GOFILES) $(GOTESTFILES) .dep-stamp
+gover.coverprofile: $(GOFILES) $(GOTESTFILES)
 	for package in exporter metrics mtail tailer vm watcher; do\
 		go test -covermode=count -coverprofile=$$package.coverprofile ./$$package;\
     done
