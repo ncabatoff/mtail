@@ -131,18 +131,6 @@ coverage.html: gover.coverprofile
 .PHONY: testall
 testall: testrace bench
 
-.PHONY: install_deps
-install_deps: .dep-stamp
-
-IMPORTS := $(shell go list -f '{{join .Imports "\n"}}' ./... ./testdata | sort | uniq | grep -v mtail)
-TESTIMPORTS := $(shell go list -f '{{join .TestImports "\n"}}' ./... ./testdata | sort | uniq | grep -v mtail)
-
-.dep-stamp:
-	# Install all dependencies, ensuring they're updated
-	go get -u -v $(IMPORTS)
-	go get -u -v $(TESTIMPORTS)
-	touch $@
-
 .PHONY: install_gen_deps
 install_gen_deps: .gen-dep-stamp
 
